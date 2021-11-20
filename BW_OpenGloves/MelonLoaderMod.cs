@@ -26,8 +26,9 @@ namespace Mod
 
     public class Mod : MelonMod
     {
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        public override void OnApplicationStart()
         {
+            base.OnApplicationStart();
             ForceFeedbackLink linkL = new ForceFeedbackLink(ForceFeedbackLink.Handness.Left);
             ForceFeedbackLink linkR = new ForceFeedbackLink(ForceFeedbackLink.Handness.Right);
 

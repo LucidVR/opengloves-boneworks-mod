@@ -33,7 +33,6 @@ namespace Mod
 
     public class ForceFeedbackLink
     {
-        private NamedPipeClientStream pipe;
 
         public enum Handness
         {
@@ -41,19 +40,21 @@ namespace Mod
             Right
         }
 
+        private NamedPipeClientStream pipe;
+        private Handness handness;
+
         public ForceFeedbackLink(Handness handness)
         {
+            this.handness = handness;
             string hand = handness == Handness.Right ? "right" : "left";
-            using (pipe = new NamedPipeClientStream($"vrapplication\\ffb\\curl\\{hand}"))
+            pipe = new NamedPipeClientStream($"vrapplication\\ffb\\curl\\{hand}");
+            MelonLogger.Msg($"Connecting to {hand} hand pipe...");
+            try
             {
-                MelonLogger.Msg($"Connecting to {hand} hand pipe...");
-                try
-                {
-                    pipe.Connect(5000);
-                }
-                catch(Exception e) { MelonLogger.Error($"Failed to connect ({e.Message.TrimEnd('\r', '\n')})"); return; }
-                if (pipe.IsConnected) { MelonLogger.Msg("Connected!"); } else { MelonLogger.Error("Failed to connect"); return; }
+                pipe.Connect(5000);
             }
+            catch(Exception e) { MelonLogger.Warning($"Failed to connect ({e.Message.TrimEnd('\r', '\n')})"); return; }
+            if (pipe.IsConnected) { MelonLogger.Msg("Connected!"); } else { MelonLogger.Warning("Failed to connect"); return; }
         }
 
         public void Relax()
@@ -74,7 +75,7 @@ namespace Mod
 
         public void Write(VRFFBInput input)
         {
-            MelonLogger.Msg(ConsoleColor.Cyan, $"[OpenGloves] {input.thumbCurl}:{input.indexCurl}:{input.middleCurl}:{input.ringCurl}:{input.pinkyCurl}");
+            MelonLogger.Msg(ConsoleColor.Cyan, $"[OpenGloves] {input.thumbCurl}:{input.indexCurl}:{input.middleCurl}:{input.ringCurl}:{input.pinkyCurl} Hand: {(handness == Handness.Right ? "right" : "left")} Connected: {pipe.IsConnected}");
 
             if (!pipe.IsConnected) return;
 
