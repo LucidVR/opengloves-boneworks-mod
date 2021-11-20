@@ -26,7 +26,6 @@ namespace Mod
 
     public class Mod : MelonMod
     {
-        private bool alreadyStarted = false;
         public override void OnApplicationStart()
         {
             base.OnApplicationStart();
