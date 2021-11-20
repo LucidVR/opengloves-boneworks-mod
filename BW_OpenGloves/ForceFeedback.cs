@@ -47,16 +47,14 @@ namespace Mod
         {
             this.handness = handness;
             string hand = handness == Handness.Right ? "right" : "left";
-            using (pipe = new NamedPipeClientStream($"vrapplication\\ffb\\curl\\{hand}"))
+            pipe = new NamedPipeClientStream($"vrapplication\\ffb\\curl\\{hand}");
+            MelonLogger.Msg($"Connecting to {hand} hand pipe...");
+            try
             {
-                MelonLogger.Msg($"Connecting to {hand} hand pipe...");
-                try
-                {
-                    pipe.Connect(5000);
-                }
-                catch(Exception e) { MelonLogger.Warning($"Failed to connect ({e.Message.TrimEnd('\r', '\n')})"); return; }
-                if (pipe.IsConnected) { MelonLogger.Msg("Connected!"); } else { MelonLogger.Warning("Failed to connect"); return; }
+                pipe.Connect(5000);
             }
+            catch(Exception e) { MelonLogger.Warning($"Failed to connect ({e.Message.TrimEnd('\r', '\n')})"); return; }
+            if (pipe.IsConnected) { MelonLogger.Msg("Connected!"); } else { MelonLogger.Warning("Failed to connect"); return; }
         }
 
         public void Relax()
