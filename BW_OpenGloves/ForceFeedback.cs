@@ -75,8 +75,9 @@ namespace Mod
 
         public void Write(VRFFBInput input)
         {
+            #if DEBUG
             MelonLogger.Msg(ConsoleColor.Cyan, $"[OpenGloves] {input.thumbCurl}:{input.indexCurl}:{input.middleCurl}:{input.ringCurl}:{input.pinkyCurl} Hand: {(handness == Handness.Right ? "right" : "left")} Connected: {pipe.IsConnected}");
-
+            #endif
             if (!pipe.IsConnected) return;
 
             int size = Marshal.SizeOf(input);
